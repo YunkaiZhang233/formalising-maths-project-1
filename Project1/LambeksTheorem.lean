@@ -1,3 +1,0 @@
-/-
-Lambek's Theorem
--/
