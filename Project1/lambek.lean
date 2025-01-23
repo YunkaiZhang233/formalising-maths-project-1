@@ -2,17 +2,17 @@ import Mathlib.Tactic
 
 set_option autoImplicit false
 
-namespace Initial
-open CategoryTheory
+-- section Initial
+-- open CategoryTheory
 
-universe u'
-universe v'
-variable {C : Type u'} [Category.{v'} C]
+-- universe u'
+-- universe v'
+-- variable {C : Type u'} [Category.{v'} C]
 
-class InitialObject (X : C) : Prop where
-  unique_morphism : ∀ (Y : C), ∃ (f : X ⟶ Y), ∀ (g : X ⟶ Y), f = g
+-- class InitialObject (X : C) : Prop where
+--   unique_morphism : ∀ (Y : C), ∃ (f : X ⟶ Y), ∀ (g : X ⟶ Y), f = g
 
-end Initial
+-- end Initial
 
 
 namespace CategoryTheory
@@ -68,7 +68,7 @@ def id : AlgebraHom A A where
     aesop
 
 def comp (m1: AlgebraHom A' B') (m2: AlgebraHom B' C') : AlgebraHom A' C' where
-  h := m1.h ≫ m2.h
+  h := m2.h ⊚ m1.h
   condition := by
     simp [Functor.map_comp]
     rw [← m2.condition]
@@ -83,6 +83,24 @@ instance (F : C ⥤ C) : CategoryStruct (FAlgebra F) where
   comp := AlgebraHom.comp -- {X Y Z : FAlgebra F} → (X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)
 --
 
+-- theorem hom_isIso ()
+
+/--
+Given any endofunctor F : C → C on an arbitrary category C,
+if i : F(I) → I is an initial F-algebra,
+then i is an isomorphism.
+
+isomorphism:IsIso
+
+CategoryTheory.IsIso
+
+given: F : C ==> C
+given: i : IsInitial I in (Category of F-Algebra)
+to show: IsIso i in (Category of F-Algebra)
+
+-/
+
+def placeholder : Prop := sorry
 
 end FAlgebra
 
