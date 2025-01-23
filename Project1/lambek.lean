@@ -2,7 +2,6 @@ import Mathlib.Tactic
 import Mathlib.CategoryTheory.Limits.Shapes.IsTerminal
 
 set_option autoImplicit false
-set_option diagnostics true
 
 -- section Initial
 -- open CategoryTheory
