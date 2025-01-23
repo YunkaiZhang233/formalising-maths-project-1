@@ -1,6 +1,8 @@
 import Mathlib.Tactic
+import Mathlib.CategoryTheory.Limits.Shapes.IsTerminal
 
 set_option autoImplicit false
+set_option diagnostics true
 
 -- section Initial
 -- open CategoryTheory
@@ -51,6 +53,7 @@ This include components:
 ```
 -/
 
+@[ext]
 structure AlgebraHom (A B : FAlgebra F) where
   -- mathching carrier
   h : A.carrier ⟶ B.carrier
@@ -75,13 +78,51 @@ def comp (m1: AlgebraHom A' B') (m2: AlgebraHom B' C') : AlgebraHom A' C' where
     simp [← Category.assoc]
     rw [m1.condition]
 
+def equiv_hom (m1: AlgebraHom A' B') (m2: AlgebraHom A' B') : Prop
+  := (m1.h = m2.h) → m1 = m2
+
 end AlgebraHom
 
 instance (F : C ⥤ C) : CategoryStruct (FAlgebra F) where
   Hom := AlgebraHom
   id := AlgebraHom.id -- (X : FAlgebra F) → X ⟶ X
-  comp := AlgebraHom.comp -- {X Y Z : FAlgebra F} → (X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)
+  comp := @AlgebraHom.comp _ _ _ -- {X Y Z : FAlgebra F} → (X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)
 --
+
+@[ext]
+lemma ext {A B : FAlgebra F} {f g : A ⟶ B} (w : f.h = g.h) : f = g :=
+  AlgebraHom.ext w
+
+
+
+
+instance (F : C ⥤ C) : Category (FAlgebra F) := {
+  --  ∀ {X Y : obj} (f : X ⟶ Y), 𝟙 X ≫ f = f
+  id_comp := by
+    intros X Y f
+    ext
+    /-
+    (𝟙 X ≫ f).h
+    = 𝟙 X . h >> f.h
+    = 𝟙 (X . h) >> f.h
+    ----- by Category.id_comp
+    = f.h
+    -/
+    sorry
+  -- ∀ {X Y : obj} (f : X ⟶ Y), f ≫ 𝟙 Y = f
+  comp_id := by
+    intros X Y f
+    sorry
+  -- Composition in a category is associative.
+  assoc := by
+    intros W X Y Z f g h
+    sorry
+}
+
+
+namespace Initial
+  variable {T} (h : @Limits.IsInitial (FAlgebra F) _ T)
+end Initial
 
 -- theorem hom_isIso ()
 
@@ -100,7 +141,10 @@ to show: IsIso i in (Category of F-Algebra)
 
 -/
 
+
 def placeholder : Prop := sorry
+
+
 
 end FAlgebra
 
