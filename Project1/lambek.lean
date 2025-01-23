@@ -93,7 +93,11 @@ instance (F : C ⥤ C) : CategoryStruct (FAlgebra F) where
 lemma ext {A B : FAlgebra F} {f g : A ⟶ B} (w : f.h = g.h) : f = g :=
   AlgebraHom.ext w
 
+theorem comp_distr {f : B' ⟶ C'}{g : A' ⟶ B'} : (f ⊚ g).h = f.h ⊚ g.h := by
+  rfl
 
+theorem id_distr {A : FAlgebra F}: (𝟙 _ : A ⟶ A).h = 𝟙 A.carrier := by
+  rfl
 
 
 instance (F : C ⥤ C) : Category (FAlgebra F) := {
@@ -101,22 +105,17 @@ instance (F : C ⥤ C) : Category (FAlgebra F) := {
   id_comp := by
     intros X Y f
     ext
-    /-
-    (𝟙 X ≫ f).h
-    = 𝟙 X . h >> f.h
-    = 𝟙 (X . h) >> f.h
-    ----- by Category.id_comp
-    = f.h
-    -/
-    sorry
+    rw [comp_distr, id_distr, Category.id_comp]
   -- ∀ {X Y : obj} (f : X ⟶ Y), f ≫ 𝟙 Y = f
   comp_id := by
     intros X Y f
-    sorry
+    ext
+    rw [comp_distr, id_distr, Category.comp_id]
   -- Composition in a category is associative.
   assoc := by
     intros W X Y Z f g h
-    sorry
+    ext
+    simp [comp_distr]
 }
 
 
