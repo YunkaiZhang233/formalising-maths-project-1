@@ -118,7 +118,7 @@ namespace Initial
     condition:= by
       rw [← Category.assoc, F.map_comp, i_to_fi, ← AlgebraHom.condition]
 
-  theorem is_inv_1 : I.mor ⊚ (i_to_fi hInit).h = 𝟙 I.carrier := by
+  lemma is_inv_1 : I.mor ⊚ (i_to_fi hInit).h = 𝟙 I.carrier := by
     have h1 : i_to_i_alg_hom hInit = 𝟙 I :=
       Limits.IsInitial.hom_ext hInit _ (𝟙 I)
     have h2 : (i_to_i_alg_hom hInit).h = 𝟙 I.carrier :=
@@ -126,6 +126,9 @@ namespace Initial
     rw [← h2]
     unfold i_to_i_alg_hom
     simp
+
+  lemma is_inv_2 : (i_to_fi hInit).h ⊚ I.mor = 𝟙 _ := by
+    sorry
 
 
 
