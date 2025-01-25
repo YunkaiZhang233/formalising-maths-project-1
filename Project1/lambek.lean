@@ -3,19 +3,6 @@ import Mathlib.CategoryTheory.Limits.Shapes.IsTerminal
 
 set_option autoImplicit false
 
--- section Initial
--- open CategoryTheory
-
--- universe u'
--- universe v'
--- variable {C : Type u'} [Category.{v'} C]
-
--- class InitialObject (X : C) : Prop where
---   unique_morphism : ∀ (Y : C), ∃ (f : X ⟶ Y), ∀ (g : X ⟶ Y), f = g
-
--- end Initial
-
-
 namespace CategoryTheory
 
 universe u v
@@ -119,7 +106,42 @@ instance (F : C ⥤ C) : Category (FAlgebra F) := {
 
 
 namespace Initial
-  variable {T} (h : @Limits.IsInitial (FAlgebra F) _ T)
+  -- initial algebra
+  variable {I} (hInit : @Limits.IsInitial (FAlgebra F) _ I)
+
+  def i_to_fi :=
+    (hInit.to ⟨F.obj I.carrier, F.map I.mor⟩)
+
+
+  def i_to_i_alg_hom : I ⟶ I where
+    h := (i_to_fi hInit).h ≫ I.mor
+    condition:= by
+      rw [← Category.assoc, F.map_comp, i_to_fi, ← AlgebraHom.condition]
+
+  theorem is_inv_1 : I.mor ⊚ (i_to_fi hInit).h = 𝟙 _ := by
+    have h1 : i_to_i_alg_hom hInit = 𝟙 I :=
+      Limits.IsInitial.hom_ext hInit _ (𝟙 I)
+    have h2 : (i_to_i_alg_hom hInit).h = 𝟙 _ :=
+      congr_arg AlgebraHom.h h1
+    rw [← h2]
+
+    sorry
+
+
+
+  theorem lambek (h : Limits.IsInitial I) : IsIso I.mor := {
+    /- define the inverse:
+    out : ∃ inv : Y ⟶ X, (f ≫ inv = 𝟙 X) ∧ (inv ≫ f = 𝟙 Y)
+    for the existence of the inverse morphism
+    -/
+    /- /-- Give the morphism from an initial object to any other. -/
+def IsInitial.to {X : C} (t : IsInitial X) (Y : C) : X ⟶ Y :=
+-/
+    /- /-- Any two morphisms from an initial object are equal. -/
+theorem IsInitial.hom_ext {X Y : C} (t : IsInitial X) (f g : X ⟶ Y) : f = g -/
+    out := sorry
+  }
+
 end Initial
 
 -- theorem hom_isIso ()
