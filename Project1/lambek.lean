@@ -128,45 +128,20 @@ namespace Initial
     simp
 
   lemma is_inv_2 : (i_to_fi hInit).h ⊚ I.mor = 𝟙 _ := by
-    sorry
+    unfold i_to_fi
+    rw [(hInit.to ⟨F.obj I.carrier, F.map I.mor⟩).condition, ← F.map_id, ← F.map_comp]
+    congr
+    apply is_inv_1 hInit
 
-
-
-  theorem lambek (h : Limits.IsInitial I) : IsIso I.mor := {
+  theorem lambek (hInitial : Limits.IsInitial I) : IsIso I.mor := {
     /- define the inverse:
     out : ∃ inv : Y ⟶ X, (f ≫ inv = 𝟙 X) ∧ (inv ≫ f = 𝟙 Y)
     for the existence of the inverse morphism
     -/
-    /- /-- Give the morphism from an initial object to any other. -/
-def IsInitial.to {X : C} (t : IsInitial X) (Y : C) : X ⟶ Y :=
--/
-    /- /-- Any two morphisms from an initial object are equal. -/
-theorem IsInitial.hom_ext {X Y : C} (t : IsInitial X) (f g : X ⟶ Y) : f = g -/
-    out := sorry
+    out := ⟨ (i_to_fi hInitial).h, is_inv_2 hInitial , is_inv_1 hInitial ⟩
   }
 
 end Initial
-
--- theorem hom_isIso ()
-
-/--
-Given any endofunctor F : C → C on an arbitrary category C,
-if i : F(I) → I is an initial F-algebra,
-then i is an isomorphism.
-
-isomorphism:IsIso
-
-CategoryTheory.IsIso
-
-given: F : C ==> C
-given: i : IsInitial I in (Category of F-Algebra)
-to show: IsIso i in (Category of F-Algebra)
-
--/
-
-
-def placeholder : Prop := sorry
-
 
 
 end FAlgebra
