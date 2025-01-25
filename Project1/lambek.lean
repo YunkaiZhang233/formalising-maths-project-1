@@ -124,8 +124,8 @@ namespace Initial
     have h2 : (i_to_i_alg_hom hInit).h = 𝟙 _ :=
       congr_arg AlgebraHom.h h1
     rw [← h2]
-
-    sorry
+    unfold i_to_i_alg_hom
+    simp
 
 
 
