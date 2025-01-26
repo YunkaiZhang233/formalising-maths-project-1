@@ -56,6 +56,7 @@ def id : AlgebraHom A A where
   condition := by
     aesop
 
+-- Composition of homomorphisms between algebras
 def comp (m1: AlgebraHom A' B') (m2: AlgebraHom B' C') : AlgebraHom A' C' where
   h := m2.h ⊚ m1.h
   condition := by
@@ -86,6 +87,9 @@ theorem id_distr {A : FAlgebra F}: (𝟙 _ : A ⟶ A).h = 𝟙 A.carrier := by
   rfl
 
 
+/- We need to show that
+  All F-Algebras form a category
+-/
 instance (F : C ⥤ C) : Category (FAlgebra F) := {
   --  ∀ {X Y : obj} (f : X ⟶ Y), 𝟙 X ≫ f = f
   id_comp := by
@@ -105,6 +109,38 @@ instance (F : C ⥤ C) : Category (FAlgebra F) := {
 }
 
 
+/-
+  The idea of the proof:
+
+  ```
+         F f           F (i)
+   F I -----> F (F I) -------> F (I)
+    |         |                 |
+  i |         | F(i)            | i
+    V         V                 V
+    I  -----> F I ------------> I
+        f             i
+```
+Given `I` is the initial object in the category of algebras on endofunctors:
+
+`f` is the unique arrow from Algebra of (F I --i--> I)
+to Algebra of (F (F I) --F (i)--> F I)
+
+so `i ⊚ f` constitutes an arrow from I to I.
+
+However, by I being the initial object, there is one unique arrow from I to I,
+which is the identity arrow. Therefore, `i ⊚ f = id_I`
+
+With this in mind, as the left swuare commutes: we have
+
+```
+f ⊚ i = F (i) ⊚ F (f)
+      = F (i ⊚ f)
+      = F (id_I)
+      = id_(F (I))
+```
+
+-/
 namespace Initial
   -- initial algebra
   variable {I} (hInit : @Limits.IsInitial (FAlgebra F) _ I)
@@ -113,11 +149,17 @@ namespace Initial
     (hInit.to ⟨F.obj I.carrier, F.map I.mor⟩)
 
 
+  /-
+    Construct the homomorphism from Algebra (I, i) to (I, i),
+    which is formed by composing the homomorphism from (I, i) to (F(I), F(i))
+    and the homomorphism from (F(I), F(i)) to (I, i)
+  -/
   def i_to_i_alg_hom : I ⟶ I where
     h := (i_to_fi hInit).h ≫ I.mor
     condition:= by
       rw [← Category.assoc, F.map_comp, i_to_fi, ← AlgebraHom.condition]
 
+  /- i ⊚ f = id_I -/
   lemma is_inv_1 : I.mor ⊚ (i_to_fi hInit).h = 𝟙 I.carrier := by
     have h1 : i_to_i_alg_hom hInit = 𝟙 I :=
       Limits.IsInitial.hom_ext hInit _ (𝟙 I)
@@ -127,17 +169,19 @@ namespace Initial
     unfold i_to_i_alg_hom
     simp
 
-  lemma is_inv_2 : (i_to_fi hInit).h ⊚ I.mor = 𝟙 _ := by
+  /- f ⊚ I = id_F(I) -/
+  lemma is_inv_2 : (i_to_fi hInit).h ⊚ I.mor = 𝟙 (F.obj I.carrier) := by
     unfold i_to_fi
     rw [(hInit.to ⟨F.obj I.carrier, F.map I.mor⟩).condition, ← F.map_id, ← F.map_comp]
     congr
     apply is_inv_1 hInit
 
+  /-
+    Lambek's Lemma:
+    if Algebra I : F (i) --i--> I is an initial F-algebra,
+    Then i is an isomorphism, with F (I) ≅ I
+  -/
   theorem lambek (hInitial : Limits.IsInitial I) : IsIso I.mor := {
-    /- define the inverse:
-    out : ∃ inv : Y ⟶ X, (f ≫ inv = 𝟙 X) ∧ (inv ≫ f = 𝟙 Y)
-    for the existence of the inverse morphism
-    -/
     out := ⟨ (i_to_fi hInitial).h, is_inv_2 hInitial , is_inv_1 hInitial ⟩
   }
 
