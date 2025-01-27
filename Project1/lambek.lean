@@ -294,10 +294,10 @@ instance (F : C ⥤ C) : Category (FCoalgebra F) := {
 /- The co-structure of the proof for that of the initial algebra -/
 namespace Terminal
   -- initial algebra
-  variable {I} (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ I)
+  variable {T} (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T)
 
-  def fi_to_i :=
-    (hTerminal.from ⟨F.obj I.carrier, F.map I.mor⟩)
+  def ft_to_t :=
+    (hTerminal.from ⟨F.obj T.carrier, F.map T.mor⟩)
 
 
   /-
@@ -305,30 +305,30 @@ namespace Terminal
     which is formed by composing the homomorphism from (I, i) to (F(I), F(i))
     and the homomorphism from (F(I), F(i)) to (I, i)
   -/
-  def i_to_i_alg_hom : I ⟶ I where
-    h :=  (fi_to_i hTerminal).h ⊚ I.mor
+  def t_to_t_alg_hom : T ⟶ T where
+    h :=  (ft_to_t hTerminal).h ⊚ T.mor
     condition:= by
-      rw [Category.assoc, F.map_comp, fi_to_i, ← CoalgebraHom.condition]
+      rw [Category.assoc, F.map_comp, ft_to_t, ← CoalgebraHom.condition]
 
-  /- f ⊚ i = id_I -/
-  lemma is_inv_1 :  (fi_to_i hTerminal).h ⊚ I.mor = 𝟙 I.carrier := by
-    have h1 : i_to_i_alg_hom hTerminal = 𝟙 I :=
-      Limits.IsTerminal.hom_ext hTerminal _ (𝟙 I)
-    have h2 : (i_to_i_alg_hom hTerminal).h = 𝟙 I.carrier :=
+  /- f ⊚ t = id_T -/
+  lemma is_inv_1 :  (ft_to_t hTerminal).h ⊚ T.mor = 𝟙 T.carrier := by
+    have h1 : t_to_t_alg_hom hTerminal = 𝟙 T :=
+      Limits.IsTerminal.hom_ext hTerminal _ (𝟙 T)
+    have h2 : (t_to_t_alg_hom hTerminal).h = 𝟙 T.carrier :=
       congr_arg CoalgebraHom.h h1
     rw [← h2]
-    unfold i_to_i_alg_hom
+    unfold t_to_t_alg_hom
     simp
 
-  /- i ⊚ f = id_F(I) -/
-  lemma is_inv_2 : I.mor ⊚ (fi_to_i hTerminal).h  = 𝟙 (F.obj I.carrier) := by
-    unfold fi_to_i
-    rw [← (hTerminal.from ⟨F.obj I.carrier, F.map I.mor⟩).condition, ← F.map_id, ← F.map_comp]
+  /- t ⊚ f = id_F(T) -/
+  lemma is_inv_2 : T.mor ⊚ (ft_to_t hTerminal).h  = 𝟙 (F.obj T.carrier) := by
+    unfold ft_to_t
+    rw [← (hTerminal.from ⟨F.obj T.carrier, F.map T.mor⟩).condition, ← F.map_id, ← F.map_comp]
     congr
     apply is_inv_1 hTerminal
 
-  theorem lambek_co (hTerminal : Limits.IsTerminal I) : IsIso I.mor := {
-    out := ⟨ (fi_to_i hTerminal).h, is_inv_1 hTerminal, is_inv_2 hTerminal  ⟩
+  theorem lambek_co (hTerminal : Limits.IsTerminal T) : IsIso T.mor := {
+    out := ⟨ (ft_to_t hTerminal).h, is_inv_1 hTerminal, is_inv_2 hTerminal  ⟩
   }
 
 end Terminal
