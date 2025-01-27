@@ -17,7 +17,7 @@ structure FAlgebra (F : C ⥤ C) where
 
 namespace FAlgebra
 
-local notation:80 g " ⊚ " f:80 => f ≫ g    -- type as \oo
+local notation:80 g " ⊚ " f:80 => CategoryTheory.CategoryStruct.comp f g    -- type as \oo    -- type as \oo
 
 
 variable {F : C ⥤ C} -- (A : FAlgebra F){B C : FAlgebra F}
