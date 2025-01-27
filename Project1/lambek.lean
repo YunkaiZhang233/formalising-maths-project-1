@@ -154,7 +154,7 @@ namespace Initial
     and the homomorphism from (F(I), F(i)) to (I, i)
   -/
   def i_to_i_alg_hom : I ⟶ I where
-    h := (i_to_fi hInit).h ≫ I.mor
+    h := I.mor ⊚ (i_to_fi hInit).h
     condition:= by
       rw [← Category.assoc, F.map_comp, i_to_fi, ← AlgebraHom.condition]
 
@@ -188,5 +188,151 @@ end Initial
 
 
 end FAlgebra
+
+structure FCoalgebra (F : C ⥤ C) where
+  /-- carrier -/
+  carrier : C
+  /-- the arrow -/
+  mor : carrier ⟶ F.obj carrier
+
+namespace FCoalgebra
+
+variable {F : C ⥤ C}
+
+variable {F : C ⥤ C} -- (A : FAlgebra F){B C : FAlgebra F}
+
+/-- Define that all F-Coalgebra form a category.
+This include components:
+* homomorphisms: `h : (A, α) ⟶ (B, β)` is essentially an arrow `h : A ⟶ B`
+  such that `F (h) ∘ α = β ∘ h`
+* identities: identity arrows
+
+```
+         F h
+   F A -----> F B
+    ∧         ∧
+  α |         | β
+    |         |
+    A  -----> B
+        h
+```
+-/
+
+@[ext]
+structure CoalgebraHom (A B : FCoalgebra F) where
+  -- mathching carrier
+  h : A.carrier ⟶ B.carrier
+  --
+  condition : (F.map h) ⊚ A.mor = B.mor ⊚ h
+
+variable (A : FCoalgebra F){A' B' C': FCoalgebra F}
+
+/-
+  Similarly we define the categorical structure stuff for coalgebras
+-/
+
+
+namespace CoalgebraHom
+
+def id : CoalgebraHom A A where
+  h := 𝟙 _
+  condition := by
+    aesop
+
+-- Composition of homomorphisms between algebras
+def comp (m1: CoalgebraHom A' B') (m2: CoalgebraHom B' C') : CoalgebraHom A' C' where
+  h := m2.h ⊚ m1.h
+  condition := by
+    simp [Functor.map_comp]
+    rw [← m2.condition]
+    simp [← Category.assoc]
+    rw [m1.condition]
+
+def equiv_hom (m1: CoalgebraHom A' B') (m2: CoalgebraHom A' B') : Prop
+  := (m1.h = m2.h) → m1 = m2
+
+end CoalgebraHom
+
+instance (F : C ⥤ C) : CategoryStruct (FCoalgebra F) where
+  Hom := CoalgebraHom
+  id := CoalgebraHom.id -- (X : FAlgebra F) → X ⟶ X
+  comp := @CoalgebraHom.comp _ _ _ -- {X Y Z : FAlgebra F} → (X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)
+--
+
+@[ext]
+lemma ext {A B : FCoalgebra F} {f g : A ⟶ B} (w : f.h = g.h) : f = g :=
+  CoalgebraHom.ext w
+
+theorem comp_distr {f : B' ⟶ C'}{g : A' ⟶ B'} : (f ⊚ g).h = f.h ⊚ g.h := by
+  rfl
+
+theorem id_distr {A : FCoalgebra F}: (𝟙 _ : A ⟶ A).h = 𝟙 A.carrier := by
+  rfl
+
+
+/- We need to show that
+  All F-Algebras form a category
+-/
+instance (F : C ⥤ C) : Category (FCoalgebra F) := {
+  --  ∀ {X Y : obj} (f : X ⟶ Y), 𝟙 X ≫ f = f
+  id_comp := by
+    intros X Y f
+    ext
+    rw [comp_distr, id_distr, Category.id_comp]
+  -- ∀ {X Y : obj} (f : X ⟶ Y), f ≫ 𝟙 Y = f
+  comp_id := by
+    intros X Y f
+    ext
+    rw [comp_distr, id_distr, Category.comp_id]
+  -- Composition in a category is associative.
+  assoc := by
+    intros W X Y Z f g h
+    ext
+    simp [comp_distr]
+}
+
+/- The co-structure of the proof for that of the initial algebra -/
+namespace Terminal
+  -- initial algebra
+  variable {I} (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ I)
+
+  def fi_to_i :=
+    (hTerminal.from ⟨F.obj I.carrier, F.map I.mor⟩)
+
+
+  /-
+    Construct the homomorphism from Algebra (I, i) to (I, i),
+    which is formed by composing the homomorphism from (I, i) to (F(I), F(i))
+    and the homomorphism from (F(I), F(i)) to (I, i)
+  -/
+  def i_to_i_alg_hom : I ⟶ I where
+    h :=  (fi_to_i hTerminal).h ⊚ I.mor
+    condition:= by
+      rw [Category.assoc, F.map_comp, fi_to_i, ← CoalgebraHom.condition]
+
+  /- f ⊚ i = id_I -/
+  lemma is_inv_1 :  (fi_to_i hTerminal).h ⊚ I.mor = 𝟙 I.carrier := by
+    have h1 : i_to_i_alg_hom hTerminal = 𝟙 I :=
+      Limits.IsTerminal.hom_ext hTerminal _ (𝟙 I)
+    have h2 : (i_to_i_alg_hom hTerminal).h = 𝟙 I.carrier :=
+      congr_arg CoalgebraHom.h h1
+    rw [← h2]
+    unfold i_to_i_alg_hom
+    simp
+
+  /- i ⊚ f = id_F(I) -/
+  lemma is_inv_2 : I.mor ⊚ (fi_to_i hTerminal).h  = 𝟙 (F.obj I.carrier) := by
+    unfold fi_to_i
+    rw [← (hTerminal.from ⟨F.obj I.carrier, F.map I.mor⟩).condition, ← F.map_id, ← F.map_comp]
+    congr
+    apply is_inv_1 hTerminal
+
+  theorem lambek_co (hTerminal : Limits.IsTerminal I) : IsIso I.mor := {
+    out := ⟨ (fi_to_i hTerminal).h, is_inv_1 hTerminal, is_inv_2 hTerminal  ⟩
+  }
+
+end Terminal
+
+end FCoalgebra
 
 end CategoryTheory
