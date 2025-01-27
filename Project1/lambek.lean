@@ -9,6 +9,8 @@ universe u v
 
 variable {C : Type u} [Category.{v} C]
 
+local notation:80 g " ⊚ " f:80 => CategoryTheory.CategoryStruct.comp f g    -- type as \oo    -- type as \oo
+
 structure FAlgebra (F : C ⥤ C) where
   /-- carrier -/
   carrier : C
@@ -16,9 +18,6 @@ structure FAlgebra (F : C ⥤ C) where
   mor : F.obj carrier ⟶ carrier
 
 namespace FAlgebra
-
-local notation:80 g " ⊚ " f:80 => CategoryTheory.CategoryStruct.comp f g    -- type as \oo    -- type as \oo
-
 
 variable {F : C ⥤ C} -- (A : FAlgebra F){B C : FAlgebra F}
 
