@@ -110,9 +110,6 @@ def comp (m1: CoalgebraHom A' B') (m2: CoalgebraHom B' C') : CoalgebraHom A' C' 
     simp [← Category.assoc]
     rw [m1.condition]
 
-def equiv_hom (m1: CoalgebraHom A' B') (m2: CoalgebraHom A' B') : Prop
-  := (m1.h = m2.h) → m1 = m2
-
 end CoalgebraHom
 
 instance (F : C ⥤ C) : CategoryStruct (FCoalgebra F) where
