@@ -1,1 +1,1 @@
-# project1
+# Project 1: Formalizing Lambek's Lemma
