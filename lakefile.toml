@@ -11,5 +11,3 @@ autoImplicit = false
 name = "mathlib"
 scope = "leanprover-community"
 
-[[lean_lib]]
-name = "Project1"
