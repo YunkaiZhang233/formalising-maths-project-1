@@ -1,4 +1,4 @@
 import Mathlib
 
-import AlgebrasOnEndofunctors.Algebra
-import AlgebrasOnEndofunctors.Coalgebra
+import Lambek.Algebra
+import Lambek.Coalgebra
