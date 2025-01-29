@@ -9,12 +9,10 @@ import Mathlib.CategoryTheory.Limits.Shapes.IsTerminal
 /-!
 # Lambek's Lemma
 
-This file formalises Lambek's Lemma and its dual form for coalgebras.
+This file formalises Lambek's Lemma.
 
 Lambek's Lemma states that for an endofunctor `F`, if an F-algebra is initial,
 then its structural map is an isomorphism.
-Dually, if an F-coalgebra is terminal,
-then its structural map is also an isomorphism.
 
 The proof follows categorical axioms, demonstrating the existence of inverse morphisms
 using the universal properties of initial/terminal objects.
@@ -22,18 +20,17 @@ using the universal properties of initial/terminal objects.
 ## Main declarations
 
 * `FAlgebra`: Structure for an F-algebra with carrier object and structural morphism
-* `FCoalgebra`: Structure for an F-coalgebra with carrier object and structural morphism
+* `AlgebraHom`: The homomorphisms between F-algebras
 * `FAlgebra.Initial.lambek`: The main theorem stating that initial F-algebras have isomorphic structural maps
-* `FCoalgebra.Terminal.lambek_co`: The dual theorem for terminal F-coalgebras
 
 ## Implementation notes
 
 The implementation builds upon mathlib's category theory foundations, particularly using:
 * Category type classes and structures
-* Initial and terminal object definitions from limits
+* Initial object definitions from limits
 * Isomorphism type classes
 
-We define the category of F-algebras and F-coalgebras by providing appropriate morphism structures
+We define the category of F-algebras by providing appropriate morphism structures
 and proving the categorical axioms.
 
 ## References
@@ -54,13 +51,13 @@ variable {C : Type u} [Category.{v} C]
 -- following the conventional notation
 local notation:80 g " ⊚ " f:80 => CategoryTheory.CategoryStruct.comp f g
 
+variable {F : C ⥤ C}
+
 structure FAlgebra (F : C ⥤ C) where
   /-- carrier -/
   carrier : C
   /-- the arrow for the structural morphism -/
   mor : F.obj carrier ⟶ carrier
-
-variable {F : C ⥤ C}
 
 namespace FAlgebra
 
@@ -106,7 +103,6 @@ def comp (m1: AlgebraHom A' B') (m2: AlgebraHom B' C') : AlgebraHom A' C' where
     rw [← m2.condition]
     simp [← Category.assoc]
     rw [m1.condition]
-
 
 end AlgebraHom
 
