@@ -1,4 +1,4 @@
-import Mathlib.Tactic
-import Mathlib.CategoryTheory.Limits.Shapes.IsTerminal
+import Mathlib
 
-set_option autoImplicit false
+import AlgebrasOnEndofunctors.Algebra
+import AlgebrasOnEndofunctors.Coalgebra
