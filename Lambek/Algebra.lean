@@ -176,10 +176,14 @@ f ⊚ i = F (i) ⊚ F (f)
 
 -/
 namespace Initial
-  -- initial algebra
-variable {I}
 
-def i_to_fi (hInit : @Limits.IsInitial (FAlgebra F) _ I) :=
+variable {I} -- The initial object
+
+/-
+  The initial algebra.
+  `abbrev` is used instead of `def` to make it possible to be unfolded
+-/
+abbrev i_to_fi (hInit : @Limits.IsInitial (FAlgebra F) _ I) :=
   (hInit.to ⟨F.obj I.carrier, F.map I.mor⟩)
 
 /-
@@ -207,7 +211,7 @@ lemma is_inv_1 (hInit : @Limits.IsInitial (FAlgebra F) _ I) :
 lemma is_inv_2 (hInit : @Limits.IsInitial (FAlgebra F) _ I) :
     (i_to_fi hInit).h ⊚ I.mor = 𝟙 (F.obj I.carrier) := by
   unfold i_to_fi
-  rw [(hInit.to ⟨F.obj I.carrier, F.map I.mor⟩).condition, ← F.map_id, ← F.map_comp]
+  rw [(i_to_fi hInit).condition, ← F.map_id, ← F.map_comp]
   congr
   apply is_inv_1 hInit
 

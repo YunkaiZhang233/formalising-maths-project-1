@@ -152,7 +152,7 @@ namespace Terminal
   -- terminal coalgebra
 variable {T}
 
-def ft_to_t (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T) :=
+abbrev ft_to_t (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T) :=
   (hTerminal.from ⟨F.obj T.carrier, F.map T.mor⟩)
 
 
@@ -181,7 +181,7 @@ lemma is_inv_1 (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T) :
 lemma is_inv_2 (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T) :
     T.mor ⊚ (ft_to_t hTerminal).h  = 𝟙 (F.obj T.carrier) := by
   unfold ft_to_t
-  rw [← (hTerminal.from ⟨F.obj T.carrier, F.map T.mor⟩).condition, ← F.map_id, ← F.map_comp]
+  rw [← (ft_to_t hTerminal).condition, ← F.map_id, ← F.map_comp]
   congr
   apply is_inv_1 hTerminal
 
