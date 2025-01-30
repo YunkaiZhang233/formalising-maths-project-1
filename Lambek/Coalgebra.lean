@@ -161,7 +161,7 @@ abbrev ft_to_t (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T) :=
   which is formed by composing the homomorphism from (I, i) to (F(I), F(i))
   and the homomorphism from (F(I), F(i)) to (I, i)
 -/
-def t_to_t_alg_hom (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T) : T ⟶ T where
+def t_to_t_coalg_hom (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T) : T ⟶ T where
   h :=  (ft_to_t hTerminal).h ⊚ T.mor
   condition:= by
     rw [Category.assoc, F.map_comp, ft_to_t, ← CoalgebraHom.condition]
@@ -169,12 +169,12 @@ def t_to_t_alg_hom (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T) : T ⟶ T
 /- f ⊚ t = id_T -/
 lemma is_inv_1 (hTerminal : @Limits.IsTerminal (FCoalgebra F) _ T) :
     (ft_to_t hTerminal).h ⊚ T.mor = 𝟙 T.carrier := by
-  have h1 : t_to_t_alg_hom hTerminal = 𝟙 T :=
+  have h1 : t_to_t_coalg_hom hTerminal = 𝟙 T :=
     Limits.IsTerminal.hom_ext hTerminal _ (𝟙 T)
-  have h2 : (t_to_t_alg_hom hTerminal).h = 𝟙 T.carrier :=
+  have h2 : (t_to_t_coalg_hom hTerminal).h = 𝟙 T.carrier :=
     congr_arg CoalgebraHom.h h1
   rw [← h2]
-  unfold t_to_t_alg_hom
+  unfold t_to_t_coalg_hom
   simp
 
 /- t ⊚ f = id_F(T) -/
