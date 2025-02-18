@@ -77,19 +77,19 @@ def factEqUnderOfOver : Factorisation f ≌ Over (Under.mk f) where
     inv := sorry
   })
 
-def factToUnderOfOver : Factorisation f ⥤ Under (Over.mk f) where
-  obj := sorry
-  map := sorry
+-- def factToUnderOfOver : Factorisation f ⥤ Under (Over.mk f) where
+--   obj := sorry
+--   map := sorry
 
-def underOfOverToFact : Under (Over.mk f) ⥤ Factorisation f where
-  obj := sorry
-  map := sorry
+-- def underOfOverToFact : Under (Over.mk f) ⥤ Factorisation f where
+--   obj := sorry
+--   map := sorry
 
--- the right square commute: Fact f ≌ f / (C / y)
-def factEqOverOfUnder : Factorisation f ≌ Under (Over.mk f) where
-  functor := factToUnderOfOver f
-  inverse := underOfOverToFact f
-  unitIso := sorry
-  counitIso := sorry
+-- -- the right square commute: Fact f ≌ f / (C / y)
+-- def factEqOverOfUnder : Factorisation f ≌ Under (Over.mk f) where
+--   functor := factToUnderOfOver f
+--   inverse := underOfOverToFact f
+--   unitIso := sorry
+--   counitIso := sorry
 
 end CategoryTheory
