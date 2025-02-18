@@ -38,6 +38,8 @@ def innerf1to2 : (ff1 f f1).left ⟶ (ff2 f f2).left := Under.homMk f12.h (f12.�
 -- def f1to2 : (ff1 f f1) ⟶ (ff2 f f2) :=
 --   Over.homMk (Under.homMk f12.h (f12.ι_h)) (by sorry)
 
+namespace OverOfUnder
+
 def from_fact : Factorisation f ⥤ Over (Under.mk f) where
   obj α := Over.mk (Under.homMk α.π : Under.mk α.ι ⟶ Under.mk f)
   map κ := Over.homMk (Under.homMk κ.h κ.ι_h) (Under.UnderMorphism.ext (by simp))
@@ -57,15 +59,13 @@ def make_under_map (α : Over (Under.mk f)) (β : Over (Under.mk f)) (κ : α �
   rw [← Under.comp_right, Over.w]
 
 def to_fact : Over (Under.mk f) ⥤ Factorisation f where
-  obj α           := { mid := α.left.right, ι := α.left.hom, π := α.hom.right }
-  map {α₁} {α₂} κ := {
-    h := κ.left.right, ι_h := Under.w κ.left, h_π := by (rw [← Under.comp_right, Over.w])
-  }
+  obj α := { mid := α.left.right, ι := α.left.hom, π := α.hom.right }
+  map κ := {h := κ.left.right, ι_h := Under.w κ.left, h_π := by (rw [← Under.comp_right, Over.w])}
 
   -- ≅ : hom x to y, inv y to x, hom_inv_id: hom ≫ inv = 𝟙 X, inv_hom_id : inv ≫ hom = 𝟙 Y
 
 -- the left square commute: Fact f ≌ (x / C) / f
-def factEqUnderOfOver : Factorisation f ≌ Over (Under.mk f) where
+def factEqOverOfUnder : Factorisation f ≌ Over (Under.mk f) where
   functor := from_fact f
   inverse := to_fact f
   unitIso := NatIso.ofComponents (fun g => {
@@ -76,20 +76,54 @@ def factEqUnderOfOver : Factorisation f ≌ Over (Under.mk f) where
     hom := 𝟙 (to_fact f ⋙ from_fact f).obj g
     inv := 𝟙 (to_fact f ⋙ from_fact f).obj g
   })
+end OverOfUnder
 
--- def factToUnderOfOver : Factorisation f ⥤ Under (Over.mk f) where
---   obj := sorry
---   map := sorry
+namespace UnderOfOver
 
--- def underOfOverToFact : Under (Over.mk f) ⥤ Factorisation f where
---   obj := sorry
---   map := sorry
+-- def from_fact : Factorisation f ⥤ Over (Under.mk f) where
+--   obj α := Over.mk (Under.homMk α.π : Under.mk α.ι ⟶ Under.mk f)
+--   map κ := Over.homMk (Under.homMk κ.h κ.ι_h) (Under.UnderMorphism.ext (by simp))
 
--- -- the right square commute: Fact f ≌ f / (C / y)
--- def factEqOverOfUnder : Factorisation f ≌ Under (Over.mk f) where
---   functor := factToUnderOfOver f
---   inverse := underOfOverToFact f
---   unitIso := sorry
---   counitIso := sorry
+def from_fact : Factorisation f ⥤ Under (Over.mk f) where
+  obj α := Under.mk (Over.homMk α.ι : Over.mk f ⟶ Over.mk α.π)
+  map κ := Under.homMk (Over.homMk κ.h κ.h_π) (Over.OverMorphism.ext (by simp))
+
+
+-- def to_fact : Over (Under.mk f) ⥤ Factorisation f where
+--   obj α := { mid := α.left.right, ι := α.left.hom, π := α.hom.right }
+--   map κ := {h := κ.left.right, ι_h := Under.w κ.left, h_π := by (rw [← Under.comp_right, Over.w])}
+
+def to_fact : Under (Over.mk f) ⥤ Factorisation f where
+  obj α := { mid := α.right.left, ι := α.hom.left, π := α.right.hom}
+  map κ := {h := κ.right.left, ι_h := by (rw [← Over.comp_left, Under.w]), h_π := Over.w κ.right}
+
+-- def factEqUnderOfOver : Factorisation f ≌ Over (Under.mk f) where
+--   functor := from_fact f
+--   inverse := to_fact f
+--   unitIso := NatIso.ofComponents (fun g => {
+--     hom := 𝟙 g -- ⋙
+--     inv := 𝟙 g
+--   } )
+  -- counitIso := NatIso.ofComponents (fun g => {
+  --   hom := 𝟙 (to_fact f ⋙ from_fact f).obj g
+  --   inv := 𝟙 (to_fact f ⋙ from_fact f).obj g
+  -- })
+
+def factEqUnderOfOver : Factorisation f ≌ Under (Over.mk f) where
+  functor := from_fact f
+  inverse := to_fact f
+  unitIso := NatIso.ofComponents (fun g => {
+    hom := 𝟙 g
+    inv := 𝟙 g
+  })
+  counitIso := NatIso.ofComponents (fun g => {
+    hom := 𝟙 (to_fact f ⋙ from_fact f).obj g
+    inv := 𝟙 (to_fact f ⋙ from_fact f).obj g
+  })
+
+end UnderOfOver
+
+
+
 
 end CategoryTheory
